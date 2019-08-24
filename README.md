@@ -1,6 +1,6 @@
 # Jazz
 
-Ultimate Software's Jazz is a JavaScript Testing Library with an obsession for practical developer experience, reliability, and good rythm.
+Ultimate Software's Jazz is a JavaScript Testing Library with an obsession for practical developer experience, reliability, and good rhythm.
 
 It works with projects using [Node](https://nodejs.org) and [Jest](https://jestjs.io/)!
 
@@ -10,10 +10,10 @@ To provide developers with a set of frustration-free testing tools that simplify
 
 ## Installation
 
-npm install jazz --saveDev
+`npm install jazz --saveDev`
 
 ## Usage
- - [Stub](STUB.md)
+ - [Stub](./src/modules/stub/STUB.md)
  - JMarbles (coming soon)
  - Schematics (comming soon)
 

@@ -1,10 +1,15 @@
 # Stub
 
+Stub automates the creation of object doubles and their necessary spies and mocks, while significantly reducing boilerplate. The tool supports:
+ - Classes and objects
+ - HttpClient calls
+ - Window Objects (Storage, Navigator)
+ - Many Angular Material Components
+ - Many more
+
 ## Sample Usage
 
-### Class testing a component
-
-- Classes, `Object`'s, `object`'s, and `{ object }`'s
+### Classes and objects
 
 ```
 import { Stub } from '@jazz/stub';
@@ -53,10 +58,8 @@ describe('RestaurantSupplyManagerComponent Class', () => {
 })
 ```
 
-### Testing a service
+### Http calls, Browser Window (Storage, Navigator)
 
- - Http calls
- - Window Storage, Navigator
 
 ```
 import { HttpClient } from '@angular/common/http';
@@ -82,6 +85,7 @@ describe('RestaurantStockService', () => {
     service = TestBed.get(SearchAnalyticsService);
   });
 
+  // Http calls
   it('createChimichurriOrder should issue a POST request to the Restaurant API', () => {
     // Arrange
     const numberOfBottles: 2;
@@ -95,5 +99,35 @@ describe('RestaurantStockService', () => {
     // Arrange
     expect(service.httpClient.post).toHaveBeenCalledWith(expectedUrl, expectedBody, expectedOptions);
   });
+
+  // Window Storage
+  it(getUserPreferences should retrieve the user-preferences from session storage,() => {
+    // Arrange
+    const preferencesMock = { language: 'en-UK', secondLanguage: 'es-US' };
+    const sessionStorageStub: Stub<WindowProperty.SessionStorage> = new Stub(WindowProperty.SessionStorage, preferencesMock);
+    // you may also set items in session storage this way:
+    sessionStorageStub.setItem('item1', 'item1Value');
+
+    // Act
+    service.getUserPreferences(numberOfBottles);  // lets assume this methods retrieves the preferences from sessionStorage;
+
+    // Arrange
+    expect(window.sessionStorage.getItem('language')).toEqual('en-UK');
+    expect(window.sessionStorage.getItem('secondLanguage')).toEqual('es-US');
+    expect(window.sessionStorage.getItem('item1')).toEqual('item1Value');
+  })
+
+  // Window Navigator
+  it(getUserPreferences should retrieve the user-preferences from session storage,() => {
+    // Arrange
+    const navigatorValuesMock = { locale: 'en-CA' };
+    const navigatorStub: Stub<WindowProperty.Navigator> = new Stub(WindowProperty.Navigator, navigatorValuesMock);
+
+    // Act
+    service.getUserPreferences(numberOfBottles);  // lets assume this methods retrieves the preferences from sessionStorage;
+
+    // Arrange
+    expect(window.localStorage.getItem('language')).toEqual('en-CA');
+  })
 });
 ```

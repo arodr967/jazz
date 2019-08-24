@@ -111,6 +111,6 @@ function stubWindowProperty(property: WindowProperty, initValues = {}) {
         }
       }
     );
-    return
+    return;
   }
 }

@@ -4,15 +4,11 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
-  ],
+  "files": [],
   "include": [
     "src/**/*.ts"
   ],
   "exclude": [
-    "src/karma.setup.ts",
     "src/**/*.spec.ts"
   ]
 }

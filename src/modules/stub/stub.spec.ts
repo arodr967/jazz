@@ -1,6 +1,6 @@
 import { of as observableOf } from 'rxjs';
 
-import { Stub, WindowProperty } from './stub';
+import { Stub, WindowProperty } from '.';
 
 
 describe('Stub', () => {
@@ -131,7 +131,7 @@ describe('Stub', () => {
     });
   });
 
-  describe('object', () => {
+  describe('objects', () => {
     type TargetType = {
       key1: string;
       key2: Function;
@@ -202,65 +202,67 @@ describe('Stub', () => {
     });
   });
 
-  describe('Window Storage', () => {
-    it(`should stub the actual window object`, () => {
-      // Arrange
-      let stub: Stub<WindowProperty.SessionStorage>;
-
-      // Act
-      stub = new Stub(WindowProperty.SessionStorage, { key1: 'value1', key2: 'value2' });
+  describe('Window', () => {
+    describe('Storage', () => {
+      it(`should stub the actual window object`, () => {
+        // Arrange
+        let stub: Stub<WindowProperty.SessionStorage>;
   
-      // Assert
-      expect(window.sessionStorage.getItem('key1')).toEqual('value1');
-    });
-
-    it(`should stub the actual Window property`, () => {
-      function getSessionStorageItem() {
-        window.sessionStorage.getItem('key1');
-        window.sessionStorage.setItem('key2', 'key2Value2');
-      }
-
-      // Arrange
-      let sesionStorageStub: Stub<WindowProperty.SessionStorage>;
-
-      // Act
-      sesionStorageStub = new Stub(WindowProperty.SessionStorage, { key1: 'value1', key2: 'value2' });
-      getSessionStorageItem();
+        // Act
+        stub = new Stub(WindowProperty.SessionStorage, { key1: 'value1', key2: 'value2' });
     
-      // Assert
-      expect(window.sessionStorage.getItem).toHaveBeenCalledWith('key1');
-      expect(window.sessionStorage.setItem).toHaveBeenCalledWith('key2', 'key2Value2');
-      expect(window.sessionStorage.getItem('key2')).toEqual('key2Value2');
-    });
-
-    it(`should not conflict with other stubbed Window properties`, () => {
-      // Arrange
-      let sesionStorageStub: Stub<WindowProperty.SessionStorage>;
-      let localStorageStub:  Stub<WindowProperty.LocalStorage>;
-      
-      // Act
-      sesionStorageStub = new Stub(WindowProperty.SessionStorage, { key1: 'sessionKey1', key2: 'sessionKey2' });
-      localStorageStub = new Stub(WindowProperty.LocalStorage, { key1: 'localKey1', key2: 'localKey2' });
-      window.localStorage.setItem('key2', 'localKey2(2)');
-
-      // Assert
-      expect(window.sessionStorage.getItem('key1')).toEqual('sessionKey1');
-      expect(window.sessionStorage.getItem('key2')).toEqual('sessionKey2');
-      expect(window.localStorage.getItem('key1')).toEqual('localKey1');
-      expect(window.localStorage.getItem('key2')).toEqual('localKey2(2)');
-    });
-  });
-
-  describe('Window Navigator', () => {
-    it(`should stub the actual window navigator`, () => {
-      // Arrange
-      let stub: Stub<WindowProperty.Navigator>;
-
-      // Act
-      stub = new Stub(WindowProperty.Navigator, { language: 'en-UK' });
+        // Assert
+        expect(window.sessionStorage.getItem('key1')).toEqual('value1');
+      });
   
-      // Assert
-      expect(window.navigator.language).toEqual('en-UK');
+      it(`should stub the actual Window property`, () => {
+        function getSessionStorageItem() {
+          window.sessionStorage.getItem('key1');
+          window.sessionStorage.setItem('key2', 'key2Value2');
+        }
+  
+        // Arrange
+        let sesionStorageStub: Stub<WindowProperty.SessionStorage>;
+  
+        // Act
+        sesionStorageStub = new Stub(WindowProperty.SessionStorage, { key1: 'value1', key2: 'value2' });
+        getSessionStorageItem();
+      
+        // Assert
+        expect(window.sessionStorage.getItem).toHaveBeenCalledWith('key1');
+        expect(window.sessionStorage.setItem).toHaveBeenCalledWith('key2', 'key2Value2');
+        expect(window.sessionStorage.getItem('key2')).toEqual('key2Value2');
+      });
+  
+      it(`should not conflict with other stubbed Window properties`, () => {
+        // Arrange
+        let sesionStorageStub: Stub<WindowProperty.SessionStorage>;
+        let localStorageStub:  Stub<WindowProperty.LocalStorage>;
+        
+        // Act
+        sesionStorageStub = new Stub(WindowProperty.SessionStorage, { key1: 'sessionKey1', key2: 'sessionKey2' });
+        localStorageStub = new Stub(WindowProperty.LocalStorage, { key1: 'localKey1', key2: 'localKey2' });
+        window.localStorage.setItem('key2', 'localKey2(2)');
+  
+        // Assert
+        expect(window.sessionStorage.getItem('key1')).toEqual('sessionKey1');
+        expect(window.sessionStorage.getItem('key2')).toEqual('sessionKey2');
+        expect(window.localStorage.getItem('key1')).toEqual('localKey1');
+        expect(window.localStorage.getItem('key2')).toEqual('localKey2(2)');
+      });
+    });
+
+    describe('Navigator', () => {
+      it(`should stub the actual window navigator`, () => {
+        // Arrange
+        let stub: Stub<WindowProperty.Navigator>;
+  
+        // Act
+        stub = new Stub(WindowProperty.Navigator, { language: 'en-UK' });
+    
+        // Assert
+        expect(window.navigator.language).toEqual('en-UK');
+      });
     });
   });
 });

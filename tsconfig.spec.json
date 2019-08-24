@@ -7,10 +7,7 @@
       "node"
     ]
   },
-  "files": [
-    "src/karma.setup.ts",
-    "src/polyfills.ts"
-  ],
+  "files": [],
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
