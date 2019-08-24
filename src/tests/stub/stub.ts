@@ -1,23 +1,43 @@
 import 'jest';
 
 /*
- * This Type allows the stub and the target object keep signature type discrepancies
- * without raising linting erros, while still allowing the stub to extend the target object.
+ * This Type allows the Stub and the target object keep signature type discrepancies
+ * without raising linting erros, while still allowing the Stub to extend the target object.
  */
 export type Stub<T> = { [Property in keyof T]: any } & T;
+
+/*
+ * the web browser's Window properties supported by Stub.
+ */
+export enum WindowProperty {
+  SessionStorage = 'sessionStorage',
+  LocalStorage = 'localStorage',
+  Navigator = 'navigator'
+}
 
 /**
  * Creates a stub of the target object and mocks its attributes.
  * @param { T } target the object to be stubbed.
  * @param { { [ attribute: string ]: any } } initialValues the properties to be initialized in the stub.
  */
-export function Stub<T>(target: T, initialValues?: { [ attribute: string ]: any }) {
+export function Stub<T>(target: T | WindowProperty, initialValues?: { [ attribute: string ]: any }) {
+  if (!target) {
+    return;
+  }
+
+  // handles Window properties.
+  if (Object.values(WindowProperty).includes(target)) {
+    stubWindowProperty.call(this, target as WindowProperty, initialValues)
+    return;
+  }
+
+  // handles all other objects.
   setStubMethods.call(this, target);
   setStubAttributes.call(this, initialValues);
 }
 
 /**
- * Declares the stub's methods as bare spies.
+ * Declares the Stub's methods as bare spies.
  * @param { ObjectConstructor } object the stubbed object.
  */
 function setStubMethods(object: ObjectConstructor) {
@@ -54,32 +74,43 @@ function setStubAttributes(initValues: { [ attribute: string ]: any }) {
     .forEach((attribute: string) => this[attribute] = initValues[attribute]);
 }
 
-export function stubWindowStorage(property: 'sessionStorage' | 'localStorage', values = {}) {
+/**
+ * Stubs the actual Window property's methods.
+ * @param { WindowProperty} property the Window Object property to stub.
+ * @param initValues the values to initialize the Stub Window object's property.
+ */
+function stubWindowProperty(property: WindowProperty, initValues = {}) {
   if (!property) {
     return;
   }
 
-  Object.defineProperty(window, property, {
-      configurable: true,
-      writable: true,
-      value: {
-        setItem: jest.fn(),
-        getItem: jest.fn(),
-        removeItem: jest.fn(),
-      }
-  });
-
-  Object.keys(values)
-    .forEach((key: string) => {
-      const value = values[key];
-      window[property][key] = jest.fn().mockReturnValue(value);
-    });
-}
-
-export function stubWindowNavigator(key: string, value: string) {
-  if (!key) {
+  if (property === 'navigator') {
+    Object.keys(initValues)
+      .forEach((key: string) => {
+        jest.spyOn(window['navigator'], key as any, 'get').mockReturnValue(initValues[key]);
+      });
     return;
   }
-  
-  jest.spyOn(global['navigator'], key, 'get').mockReturnValue(value);
+
+  if (property === WindowProperty.LocalStorage || property === WindowProperty.SessionStorage) {
+    this.items = { ...initValues };
+    Object.defineProperty(
+      window,
+      property,
+      {
+        configurable: true,
+        writable: true,
+        value: {
+          setItem: jest.fn().mockImplementation((item: string, value: string) => {
+            this.items = {...this.items, [item]: value }
+          }),
+          getItem: jest.fn().mockImplementation((item: string) => this.items[item]),
+          removeItem: jest.fn().mockImplementation((item: string) => {
+            this.items = this.items.filter((i: string) => i !== item);
+          })
+        }
+      }
+    );
+    return
+  }
 }
