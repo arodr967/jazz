@@ -1,15 +1,15 @@
 import 'jest';
 
 /*
- * Providing this type allows the stub and the target object keep signature type discrepancies
- * without raising linting erros, while still allowing the stub to extend the target object's type.
+ * This Type allows the stub and the target object keep signature type discrepancies
+ * without raising linting erros, while still allowing the stub to extend the target object.
  */
 export type Stub<T> = { [Property in keyof T]: any } & T;
 
 /**
  * Creates a stub of the target object and mocks its attributes.
- * @param { T } target the class to be stubbed.
- * @param { { [ attribute: string ]: any } } initialValues the class properties to be initialized in the stub.
+ * @param { T } target the object to be stubbed.
+ * @param { { [ attribute: string ]: any } } initialValues the properties to be initialized in the stub.
  */
 export function Stub<T>(target: T, initialValues?: { [ attribute: string ]: any }) {
   setStubMethods.call(this, target);
