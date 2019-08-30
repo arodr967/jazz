@@ -2,9 +2,10 @@ import 'jest';
 
 /*
  * This Type allows the Stub and the target object keep signature type discrepancies
- * without raising linting erros, while still allowing the Stub to extend the target object.
+ * without raising linting errors, while still allowing the Stub to extend the target object.
+ * This also allows for autocomplete functionality for jest spy related operations.
  */
-export type Stub<T> = { [Property in keyof T]: any } & T;
+export type Stub<T> = { [Property in keyof T]: T[Property] extends (...args: infer U) => infer R ? jest.Mock<R, U> : T[Property]};
 
 /*
  * the web browser's Window properties supported by Stub.
